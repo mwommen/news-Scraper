@@ -3,18 +3,27 @@ var bodyParer = require ("body-parser")
 var mongoose = require ("mongoose");
 var exphbs = require("express-handlebars");
 var cheerio = require("cheerio");
+var express = require("express");
+// var hmtlRouter = require ('.controllers/html-routes.js');
+// var articleRouter = require('.controllers/article-routes.js ')
+var port = process.env.PORT || 3000;
+var app = express();
 
 
+app.use(bodyParer.urlencoded({
+    extended:false
+}));
 
+//Initialize handlebars 
+app.engine("handlebars",exphbs({defaultLayout: "main"}));
+app.set("view engine", "handlebars");
 
+// app.use('/', hmtlRouter);
+// app.use('/', articleRouter);
 
-
-
-
-
-
-
-
+app.use(express.static("public"));
+// Check on MONGODB
+var URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/WebScraper';
 
 
 // Here we find an appropriate database to connect to, defaulting to
@@ -24,12 +33,8 @@ process.env.MONGOLAB_URI ||
 process.env.MONGOHQ_URL ||
 'mongodb://localhost/WebScraper';
 
-// The http server will listen to an appropriate port, or default to
-// port 5000.
-var theport = process.env.PORT || 5000;
+var theport = process.env.PORT || 3000;
 
-// Makes connection asynchronously.  Mongoose will queue up database
-// operations and release them when the connection is complete.
 mongoose.connect(uristring, function (err, res) {
   if (err) {
   console.log ('ERROR connecting to: ' + uristring + '. ' + err);
