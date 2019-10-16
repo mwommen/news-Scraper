@@ -1,4 +1,3 @@
-var mongoose = require ("mongoose"); 
 var bodyParer = require ("body-parser")
 var mongoose = require ("mongoose");
 var exphbs = require("express-handlebars");
@@ -42,3 +41,4 @@ mongoose.connect(uristring, function (err, res) {
   console.log ('Succeeded connected to: ' + uristring);
   }
 });
+
