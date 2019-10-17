@@ -5,5 +5,20 @@ var ArticleSchema = new Schema({
         type:String,
         required: true,
         unique:true
-    }
-})
+    },
+    description: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    saved: {
+        type:Boolean,
+        required: true,
+        default: false
+    },
+    comments: [{
+        type:Schema.ObjectId,
+        ref: 'Comment'
+    }]
+});
+ 
