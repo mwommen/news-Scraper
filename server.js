@@ -23,11 +23,7 @@ app.set("view engine", "handlebars");
 app.use(express.static("public"));
 // Check on MONGODB connection
 var URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/WebScraper';
-
-// var uristring =
-// process.env.MONGOLAB_URI ||
-// process.env.MONGOHQ_URL ||
-// 'mongodb://localhost/WebScraper';
+console.log('hello')
 
 var port = process.env.PORT || 3000;
 
@@ -38,7 +34,7 @@ mongoose.connect(URI, function (err, res) {
       app.listen(port, (err) => {
         if(err) throw err;
 
-        console.log ('Succeeded connected to threadId: ' + res.threadId + "\non PORT" + port);
+        console.log ('Succeeded connection to threadId: ' + res.threadId + "\non PORT" + port);
       })
   }
 });

@@ -12,7 +12,7 @@ $(document).ready(function() {
 
 $.getJSON('/articles', function(data) {
     for (var i = 0; i < data.length; i++) {
-        $('#scrape-results').prepend("div class = 'result-div'><p class = 'result-text'>" + data[i].title + "<br>" + data[i].description +
+        $('#scrape-results').prepend("<div class = 'result-div'><p class = 'result-text'>" + data[i].title + "<br>" + data[i].description +
         "</p><button class ='save-article button is-info is-medium' data-id='" + data[i]._id + "'><span class='icon'><i class='fa fa-boomark'><span> Save Article</button></div>")
     }
 });
