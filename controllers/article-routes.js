@@ -1,34 +1,45 @@
 var express = require('express');
-var request = require('request');
+var axios = require('axios');
 var cheerio = require('cheerio');
 var Comment = require('../models/Comment.js');
-var Article = require('../models/Article.js');
+var db = require('../models');
 var router = express.Router();
 
 
 router.get('/scrape', function(req,res){
-request("https://www.espnfrontrow.com/category/news/breaking-news/", function(error, response, html) {
-    var $ = cheerio.load(html);
-    $("div.newsList > article").each(function(i,element){
-        let result = {};
+  console.log('hi')
+  axios.get("https://www.espnfrontrow.com/category/news/breaking-news/").then( function(response) {
+    var $ = cheerio.load(response.data);
+    const results = [];
+    $("#masonry-grid").children().each(function(i,element){
+      console.log(element)
+        const result = {};
+        result.title = $(element).find('.entry-title > a').attr('title');
+        result.description = $(element).find('.entry-content > p').text()
+    results.push(result)
 
-        result.title = $(element).children('div.item-info').children('h2.title').html();
-        result.description = $(element).children('div.item-info').children('p-teaser').children('a').text()
-
-let entry = new Article(result);
-
-entry.save(function(err, doc) {
-    if (err) {
-      console.log(err);
-    }
-    else {
-      console.log(doc);
-    }
-  });
+// entry.save(function(err, doc) {
+//     if (err) {
+//       console.log(err);
+//     }
+//     else {
+//       console.log(doc);
+//     }
+//   });
 
 });
+console.log(results)
 //Reloading the page 
-res.redirect("/");
+//Remove invalid articles
+const filteredArticles = results.filter(article => article.title && article.description);
+db.Article.insertMany(filteredArticles)
+.then(() => {
+  res.redirect("/");
+})
+.catch(err => {
+  console.log(err);
+  res.json({err});
+})
 });  
 });
 
@@ -37,7 +48,7 @@ res.redirect("/");
 
 //Set up articles to be scraped from MongoDB
 router.get('/articles', function(req, res) {
-    Article.find({})
+    db.Article.find({})
     .exec(function(err,doc) {
         if (err) {
             console.log(err);
@@ -50,7 +61,7 @@ router.get('/articles', function(req, res) {
 
     //Save articles 
     router.post('save/:id', function(req,res) {
-        Article.findAndUpdate({ "_id": req.params.id }, {"saved": true})
+        db.Article.findAndUpdate({ "_id": req.params.id }, {"saved": true})
         .exec(function(err,doc) {
             if(err)
             console.log(err) 
@@ -61,11 +72,11 @@ router.get('/articles', function(req, res) {
     });
 
     //Build routes for saved articles 
-router.get('articles/:id', (function(req,res) {
-    Article.findOne({"_id":req.params.id})
+router.get('articles/:id', function(req,res) {
+    db.Article.findOne({"_id":req.params.id})
     .populate(
         ('comments')
-    .exec(function(err,doc) {
+    .then(function(err,doc) {
         if (error) {
             console.log(error);
           }
@@ -73,6 +84,8 @@ router.get('articles/:id', (function(req,res) {
           else {
             res.json(doc);
           }
+        }));
+      
         
     });
 
@@ -92,13 +105,13 @@ router.post ('/comment/:id', function(req,res) {
                 res.send(doc);
             }
         })}; 
-    }
- })
-})
+    })
+ });
+
 
 //Removing saved articles 
 router.post('/unsave/:id', function(req,res) {
-    Article.findAndUpdate({" _id": req.params.id}, {'saved': false})
+    db.Article.findAndUpdate({" _id": req.params.id}, {'saved': false})
     .exec(function(err, doc) {
         // Log any errors
         if (err) {

@@ -1,0 +1,27 @@
+{
+  "name": "news-Scraper",
+  "version": "1.0.0",
+  "description": "Run npm init. When that's finished, install and save these npm packages:",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mwommen/news-Scraper.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mwommen/news-Scraper/issues"
+  },
+  "homepage": "https://github.com/mwommen/news-Scraper#readme",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "nodemon": "^1.19.4",
+    "request": "^2.88.0"
+  }
+}

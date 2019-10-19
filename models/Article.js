@@ -9,7 +9,6 @@ var ArticleSchema = new Schema({
     description: {
         type: String,
         required: true,
-        unique: true,
     },
     saved: {
         type:Boolean,
@@ -22,3 +21,6 @@ var ArticleSchema = new Schema({
     }]
 });
  
+var Article = mongoose.model('Article', ArticleSchema);
+
+module.exports = Article;
